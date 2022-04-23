@@ -36,12 +36,10 @@ import numpy as np
 
 """ Meshes """
 
-# --- Meshes will be made out of a set of points --- #
+# --- Making a mesh --- #
 
-# meshes contain array of points
-# meshes contain array of indicies to create triangles
-# meshes contain an array of uv's to map textures
-# meshes will have points calculated because python = slow
+# Mesh will consist of a numpy array that holds all points
+# Each point in array will be a Vector3
 
 # --- To draw a mesh --- #
 
@@ -56,21 +54,36 @@ import numpy as np
 # Add functions for later expansion with movement
 
 
-class Camera:
+class Vector3:
     def __init__(self, x: float, y: float, z: float) -> None:
-        self.pos = np.array([x, y, z], float)
-        self.rotation = np.zeros(3, dtype=float)
-        self.normal = np.zeros(3, dtype=float)
+        self.x, self.y, self.z = x, y, z
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__} (x = {self.x}, y = {self.y}, z = {self.z})"
+
+    def __str__(self) -> str:
+        return f"[{self.x}, {self.y}, {self.z}]"
+
+    # __array__ is used by numpy when operations are done with a numpy array
+    def __array__(self):
+        return np.array([self.x, self.y, self.z], float)
+
+
+class Mesh:
+    pass
+
+
+class Camera:
+    pass
 
 
 class Renderer:
-    def __init__(self) -> None:
-        pass
+    pass
 
 
 def main():
-    a = np.array([1, 2, 3], float)
-    print(a.data)
+    v = Vector3(1, 2, 3)
+    print(v)
 
 
 if __name__ == "__main__":
