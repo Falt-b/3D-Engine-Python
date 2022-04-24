@@ -1,7 +1,7 @@
 import pygame
 import numpy as np
 
-WIDTH = 1920
+WIDTH = 600
 HEIGHT = 600
 FRAME_CAP = 60
 BG_COLOR = (20, 20, 20)
@@ -51,6 +51,13 @@ ASPECT_RATIO = WIDTH / HEIGHT
 # Add functions for later expansion with movement
 
 
+""" Different array types """
+
+# Using different array types for containers will help speed
+# meshes could contain hundreds of points
+# numpy arrays that hold Vector3's
+
+
 class Vector3:
     def __init__(self, x: float, y: float, z: float) -> None:
         self.x, self.y, self.z = x, y, z
@@ -65,6 +72,10 @@ class Vector3:
     def __array__(self):
         return np.array([self.x, self.y, self.z], float)
 
+    def normalize(self):
+        n = self.x**2 + self.y**2 + self.z**2
+        return Vector3(self.x / n, self.y / n, self.z / n)
+
 
 class Camera:
     def __init__(
@@ -77,6 +88,7 @@ class Camera:
     ) -> None:
         self.pos = Vector3(position[0], position[1], position[2])
         self.rot = Vector3(rotation[0], rotation[1], rotation[2])
+        self.normal = self.pos.normalize()
         self.fov = fov
         self.max = max_view_dist
         self.min = min_view_dist
@@ -85,7 +97,19 @@ class Camera:
 class Light:
     def __init__(self, position: list, rotation: list) -> None:
         self.pos = Vector3(position[0], position[1], position[2])
-        self.rot = Vector3(rotation[0], rotation[1], rotation[3])
+
+        # only for directional light implementation
+        # self.rot = Vector3(rotation[0], rotation[1], rotation[3])
+
+        self.normal = self.pos.normalize()
+
+    # --- Multiple Lights --- #
+
+    # for scenes with multiple lights
+    # the normal of each light will be taken
+    # the normals with then be averaged
+    # or they will be weighted depending on the angle of the surface normal
+    # if the light will even hit the surface
 
 
 class Mesh:
@@ -100,14 +124,45 @@ class Object3D:
         self.rot = Vector3(rotation[0], rotation[1], rotation[3])
         self.mesh = mesh
 
+    # Object3D will take responsibility for everything with it's mesh
+
 
 class Renderer:
     pass
 
+    # --- Rendering --- #
+
+    # how will triangles be passed into the renderer
+
+    # add options for wire-frame view
+    # add option for showing surface normals
+    # normals will come from center of triangle
+
 
 def main():
-    v = Vector3(1, 2, 3)
-    print(v)
+    pygame.init()
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.display.set_caption("3D Engine in python")
+    clock = pygame.time.Clock()
+    t = 0
+    dt = 0
+    last_frame = 0
+    running = True
+
+    while running:
+        clock.tick(FRAME_CAP)
+        t = pygame.time.get_ticks()
+        dt = (t - last_frame) / 1000
+        last_frame = t
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    running = False
+        screen.fill(BG_COLOR)
+
+        pygame.display.update()
 
 
 if __name__ == "__main__":
