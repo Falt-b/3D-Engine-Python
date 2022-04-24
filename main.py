@@ -1,21 +1,18 @@
 import pygame
 import numpy as np
 
+WIDTH = 1920
+HEIGHT = 600
+FRAME_CAP = 60
+BG_COLOR = (20, 20, 20)
+ASPECT_RATIO = WIDTH / HEIGHT
+
 """ Engine """
 
 # small engine used to learn
 # easy to play around with
 # some more advanced features
 # purely a learning project with python
-
-
-""" Readability """
-
-# --- Removing indicies --- #
-
-# Vector3 class wil be made to use point with x, y , z
-# https://numpy.org/doc/stable/user/basics.subclassing.html
-
 
 """ Ease of Use """
 
@@ -48,9 +45,9 @@ import numpy as np
 # coloring and texturing will be done for the triangle
 # normal will be calculated for the triangle
 
+
 """ Camera """
 
-# Camera given own class for access
 # Add functions for later expansion with movement
 
 
@@ -69,12 +66,39 @@ class Vector3:
         return np.array([self.x, self.y, self.z], float)
 
 
-class Mesh:
-    pass
-
-
 class Camera:
-    pass
+    def __init__(
+        self,
+        position: list,
+        rotation: list,
+        fov: int,
+        max_view_dist: float,
+        min_view_dist: float,
+    ) -> None:
+        self.pos = Vector3(position[0], position[1], position[2])
+        self.rot = Vector3(rotation[0], rotation[1], rotation[2])
+        self.fov = fov
+        self.max = max_view_dist
+        self.min = min_view_dist
+
+
+class Light:
+    def __init__(self, position: list, rotation: list) -> None:
+        self.pos = Vector3(position[0], position[1], position[2])
+        self.rot = Vector3(rotation[0], rotation[1], rotation[3])
+
+
+class Mesh:
+    def __init__(self, points: np.array, triangles: np.array) -> None:
+        self.points = points
+        self.triangles = triangles
+
+
+class Object3D:
+    def __init__(self, position: list, rotation: list, mesh: Mesh) -> None:
+        self.pos = Vector3(position[0], position[1], position[2])
+        self.rot = Vector3(rotation[0], rotation[1], rotation[3])
+        self.mesh = mesh
 
 
 class Renderer:
