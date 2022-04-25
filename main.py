@@ -50,20 +50,12 @@ ASPECT_RATIO = WIDTH / HEIGHT
 
 # Add functions for later expansion with movement
 
-
-""" Different array types """
-
-# Using different array types for containers will help speed
-# meshes could contain hundreds of points
-# numpy arrays that hold Vector3's
-
-
-class Vector3:
+class Vector3(pygame.Vector3):
     def __init__(self, x: float, y: float, z: float) -> None:
-        self.x, self.y, self.z = x, y, z
+        super().__init__(x, y, z)
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__} (x = {self.x}, y = {self.y}, z = {self.z})"
+        return f"{self.__class__.__name__} x = {self.x}, y = {self.y}, z = {self.z}"
 
     def __str__(self) -> str:
         return f"[{self.x}, {self.y}, {self.z}]"
@@ -86,8 +78,8 @@ class Camera:
         max_view_dist: float,
         min_view_dist: float,
     ) -> None:
-        self.pos = Vector3(position[0], position[1], position[2])
-        self.rot = Vector3(rotation[0], rotation[1], rotation[2])
+        self.position = Vector3(position[0], position[1], position[2])
+        self.rotation = Vector3(rotation[0], rotation[1], rotation[2])
         self.normal = self.pos.normalize()
         self.fov = fov
         self.max = max_view_dist
@@ -95,13 +87,15 @@ class Camera:
 
 
 class Light:
-    def __init__(self, position: list, rotation: list) -> None:
-        self.pos = Vector3(position[0], position[1], position[2])
-
-        # only for directional light implementation
-        # self.rot = Vector3(rotation[0], rotation[1], rotation[3])
-
+    def __init__(self, position: list, rotation: list, color: list) -> None:
+        self.color = Vector3(color[0], color[1], color[2])
+        self.position = Vector3(position[0], position[1], position[2])
+        self.rotation = Vector3(rotation[0], rotation[1], rotation[3])
         self.normal = self.pos.normalize()
+
+        # --- copy lighting tech fomr here --- #
+
+        #https://learnopengl.com/Lighting/Basic-Lighting
 
     # --- Multiple Lights --- #
 
@@ -120,8 +114,8 @@ class Mesh:
 
 class Object3D:
     def __init__(self, position: list, rotation: list, mesh: Mesh) -> None:
-        self.pos = Vector3(position[0], position[1], position[2])
-        self.rot = Vector3(rotation[0], rotation[1], rotation[3])
+        self.position = Vector3(position[0], position[1], position[2])
+        self.rotation = Vector3(rotation[0], rotation[1], rotation[3])
         self.mesh = mesh
 
     # Object3D will take responsibility for everything with it's mesh
