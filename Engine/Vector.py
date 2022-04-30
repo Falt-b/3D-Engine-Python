@@ -15,3 +15,7 @@ class Vector3D(pygame.Vector3):
 
     def __array__(self):
         return np.array([self.x, self.y, self.z, self.w])
+
+    def normalize(self):
+        n = self.x**2 + self.y**2 + self.z**2
+        return Vector3D(self.x / n, self.y / n, self.z / n)
